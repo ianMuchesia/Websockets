@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Application Test</title>
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Chat Application Test</h1>
+  <div id="chat">
+    <ul id="messages"></ul>
+    <input id="message" autocomplete="off" /><button id="sendButton">Send</button>
+  </div>
+
+  <script>
+    // Replace 'your_jwt_token' with an actual token if you have one for testing
+    const socket = io('http://localhost:4000', {
+      query: {
+        token: 'your_jwt_token'
+      }
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+
+    socket.on('message', (data) => {
+      const messageElement = document.createElement('li');
+      messageElement.textContent = data.data;
+      document.getElementById('messages').appendChild(messageElement);
+    });
+
+    document.getElementById('sendButton').addEventListener('click', () => {
+      const message = document.getElementById('message').value;
+      socket.emit('message', message);
+      document.getElementById('message').value = '';
+    });
+  </script>
+</body>
+</html>
